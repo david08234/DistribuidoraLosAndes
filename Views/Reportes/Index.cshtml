@@ -79,33 +79,50 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net
-npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('ventasChart').getContext('2d');
-        // Inyectamos los datos del modelo directamente al JS
-        const labels = @Json.Serialize(Model.OrderBy(p => p.FechaPedido).Select(p => p.FechaPedido.ToString("dd/MM")));
-        const data = @Json.Serialize(Model.OrderBy(p => p.FechaPedido).Select(p => p.Total));
+    @{
+        var listaProcesada = new List<object>();
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Ingresos por Pedido (Bs.)',
-                    data: data,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
-            }
-        });
+        if (Model != null)
+        {
+            listaProcesada = Model.OrderBy(p => p.FechaPedido)
+                .Select(p => (object)new
+                {
+                    fecha = p.FechaPedido.ToString("dd/MM"),
+                    total = (double)p.Total
+                }).ToList();
+        }
+
+        var jsonData = Json.Serialize(listaProcesada);
+    }
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const rawData = @Html.Raw(jsonData);
+
+        if (rawData && rawData.length > 0) {
+            const ctx = document.getElementById('ventasChart').getContext('2d');
+            const labels = rawData.map(item => item.fecha);
+            const data = rawData.map(item => item.total);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ingresos por Pedido (Bs.)',
+                        data: data,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
     </script>
 }
