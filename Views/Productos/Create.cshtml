@@ -14,7 +14,7 @@
                     <a asp-action="Index" class="btn btn-sm btn-light border text-secondary">Volver al inventario</a>
                 </div>
 
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
 
                     <div class="row">
@@ -50,9 +50,9 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="ImagenUrl" class="form-label small fw-medium text-secondary">URL de la Imagen (Opcional por ahora)</label>
-                        <input asp-for="ImagenUrl" class="form-control shadcn-input" placeholder="https://ejemplo.com/botella.jpg" />
-                        <div class="form-text small">se puede hacer o no para subir archivos directamente pero falta .</div>
+                        <label asp-for="ImagenArchivo" class="form-label small fw-medium text-secondary">Subir Imagen desde PC (Opcional)</label>
+                        <input asp-for="ImagenArchivo" type="file" class="form-control shadcn-input" accept="image/*" />
+                        <div class="form-text small">Formatos permitidos: JPG, PNG. La imagen se guardará automáticamente en el servidor.</div>
                     </div>
 
                     <button type="submit" class="btn btn-dark w-100 fw-medium py-2" style="background-color: #0f172a;">
