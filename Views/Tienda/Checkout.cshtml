@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Finalizar Compra";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="bg-white p-4 rounded-3 border border-light shadow-sm" style="border-color: #e2e8f0 !important;">
+
+                <div class="text-center mb-4 pb-3 border-bottom">
+                    <i class="bi bi-credit-card-2-front text-dark mb-2" style="font-size: 2.5rem;"></i>
+                    <h3 class="fw-bold text-dark mb-1" style="letter-spacing: -0.025em;">Finalizar Compra</h3>
+                    <p class="text-muted small mb-0">Completa tus datos para procesar el envío</p>
+                </div>
+
+                <form asp-action="ConfirmarPedido" method="post">
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="bi bi-geo-alt me-1"></i> Dirección de envío en Cochabamba *
+                        </label>
+                        <input type="text" name="direccion" class="form-control shadcn-input py-2"
+                               placeholder="Ej: Av. Blanco Galindo Km 3, Zona Cala Cala" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="bi bi-wallet2 me-1"></i> Método de pago *
+                        </label>
+                        <select name="metodoPago" class="form-select shadcn-input py-2" required>
+                            <option value="">Seleccione cómo desea pagar...</option>
+                            <option value="QR / Transferencia">📱 QR / Transferencia Bancaria</option>
+                            <option value="Tarjeta de Débito/Crédito">💳 Tarjeta de Débito/Crédito</option>
+                            <option value="Efectivo contra entrega">🚚 Efectivo al recibir el pedido</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center border" style="border-color: #e2e8f0 !important;">
+                        <span class="text-secondary fw-medium">Total a pagar:</span>
+                        <span class="fs-4 fw-bold text-dark">Bs. @ViewBag.Total.ToString("0.00")</span>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <a asp-action="Carrito" class="btn btn-light border fw-medium w-50 py-2 text-secondary" style="border-radius: 0.375rem;">
+                            <i class="bi bi-arrow-left me-1"></i> Volver al Carrito
+                        </a>
+                        <button type="submit" class="btn btn-dark fw-bold w-50 py-2 shadow-sm" style="background-color: #0f172a; border-radius: 0.375rem;">
+                            Confirmar Pedido <i class="bi bi-check2-circle ms-1"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .shadcn-input {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 0.9rem;
+        color: #0f172a;
+    }
+
+        .shadcn-input:focus {
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1);
+        }
+</style>

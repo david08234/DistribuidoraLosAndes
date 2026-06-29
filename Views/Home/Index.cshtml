@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    var usuarioNombre = Context.Session.GetString("UsuarioNombre");
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card-custom text-center p-5">
+
+                @if (!string.IsNullOrEmpty(usuarioNombre))
+                {
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center p-3 mb-4 shadow-sm" style="width: 80px; height: 80px;">
+                        <i class="bi bi-emoji-smile-fill" style="font-size: 2.5rem; color: #64748b;"></i>
+                    </div>
+
+                    <h2 class="fw-bold text-dark mb-2">¡Hola, @usuarioNombre!</h2>
+                    <p class="text-muted mb-4">Has iniciado sesión correctamente.</p>
+
+                    <hr class="text-muted opacity-25 mb-4" />
+
+                    <a asp-controller="Tienda" asp-action="Index" class="btn w-100 btn-lg rounded-pill fw-bold shadow-sm text-white mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                        <i class="bi bi-shop me-2"></i>Ir a la Tienda
+                    </a>
+
+                    <a asp-controller="Reportes" asp-action="Index" class="btn w-100 btn-lg rounded-pill fw-bold shadow-sm text-white mb-4" style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%); border: none;">
+                        <i class="bi bi-bar-chart-line-fill me-2"></i>Ver Reportes
+                    </a>
+                }
+                else
+                {
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center p-3 mb-4 shadow-sm" style="width: 80px; height: 80px;">
+                        <i class="bi bi-box-seam" style="font-size: 2.5rem; color: #64748b;"></i>
+                    </div>
+
+                    <h2 class="fw-bold text-dark mb-2">Bienvenido a Los Andes</h2>
+                    <p class="text-muted mb-4">Tu distribuidora de bebidas de confianza.</p>
+
+                    <a asp-controller="Account" asp-action="Login" class="btn w-100 btn-lg rounded-pill fw-bold shadow-sm text-white mb-3" style="background: #0f172a; border: none;">
+                        Iniciar Sesión
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-dark w-100 rounded-pill fw-bold">
+                        Crear una cuenta
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn:hover {
+        transform: translateY(-3px);
+    }
+</style>

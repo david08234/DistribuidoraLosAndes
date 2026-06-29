@@ -1,0 +1,81 @@
+﻿@model List<DistribuidoraLosAndes.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Mis Compras";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="bg-white p-4 rounded-3 border border-light shadow-sm" style="border-color: #e2e8f0 !important;">
+
+        <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+            <i class="bi bi-bag-check fs-3 me-2 text-dark"></i>
+            <h3 class="fw-bold text-dark mb-0" style="letter-spacing: -0.025em;">Historial de Compras</h3>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-receipt text-muted mb-3" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold text-dark">Aún no tienes compras</h4>
+                <p class="text-muted">Cuando realices un pedido en Los Andes, aparecerá aquí.</p>
+                <a asp-action="Index" class="btn btn-dark mt-3 px-4 py-2 fw-medium" style="background-color: #0f172a; border-radius: 0.375rem;">
+                    <i class="bi bi-shop me-1"></i> Ir a la Tienda
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="accordion" id="accordionPedidos">
+                @foreach (var pedido in Model)
+                {
+                    <div class="accordion-item mb-3 border rounded-3 overflow-hidden shadow-sm" style="border-color: #e2e8f0 !important;">
+                        <h2 class="accordion-header" id="heading-@pedido.Id">
+                            <button class="accordion-button collapsed bg-light text-dark fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@pedido.Id" aria-expanded="false" aria-controls="collapse-@pedido.Id">
+                                <div class="d-flex justify-content-between w-100 me-3 align-items-center flex-wrap gap-2">
+                                    <span><i class="bi bi-box-seam me-2"></i>Pedido #@pedido.Id</span>
+                                    <span class="badge bg-success rounded-pill fw-medium px-3 py-2">@pedido.Estado</span>
+                                    <span class="text-muted small fw-normal"><i class="bi bi-calendar3 me-1"></i>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</span>
+                                    <span class="fs-6">Bs. @pedido.Total.ToString("0.00")</span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse-@pedido.Id" class="accordion-collapse collapse" aria-labelledby="heading-@pedido.Id" data-bs-parent="#accordionPedidos">
+                            <div class="accordion-body bg-white">
+                                <div class="row">
+
+                                    <div class="col-md-7 mb-4 mb-md-0">
+                                        <h6 class="fw-bold mb-3 text-secondary border-bottom pb-2">Artículos comprados</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm align-middle table-borderless">
+                                                <tbody>
+                                                    @foreach (var detalle in pedido.Detalles!)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-medium text-dark">@detalle.Producto?.Nombre</td>
+                                                            <td class="text-muted text-center">x @detalle.Cantidad</td>
+                                                            <td class="text-end fw-medium">Bs. @detalle.Subtotal.ToString("0.00")</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="bg-light p-3 rounded-3 border" style="border-color: #e2e8f0 !important;">
+                                            <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2">Detalles de Envío</h6>
+                                            <p class="mb-2 small"><strong class="text-dark">📍 Dirección:</strong> @pedido.DireccionEnvio</p>
+                                            <p class="mb-2 small"><strong class="text-dark">💳 Método:</strong> @pedido.MetodoPago</p>
+                                            <p class="mb-0 small"><strong class="text-dark">🏷️ Referencia:</strong> @pedido.NumeroReferencia</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

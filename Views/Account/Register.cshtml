@@ -1,0 +1,74 @@
+﻿@model DistribuidoraLosAndes.Models.Usuario
+
+@{
+    ViewData["Title"] = "Crear Cuenta";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="bg-white p-4 rounded-3 border border-light shadow-sm" style="border-color: #e2e8f0 !important;">
+
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark mb-1" style="letter-spacing: -0.025em;">Crear una cuenta</h3>
+                    <p class="text-muted small">Ingresa tus datos para registrarte en Los Andes.</p>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger py-2 px-3 small border-0 text-center mb-3" style="border-radius: 0.375rem;">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>@ViewBag.Error
+                    </div>
+                }
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="form-label small fw-medium text-secondary">Nombre Completo</label>
+                        <input asp-for="Nombre" class="form-control shadcn-input" placeholder="Ej: Juan Perez" required />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label small fw-medium text-secondary">Correo Electrónico</label>
+                        <input asp-for="Email" type="email" class="form-control shadcn-input" placeholder="juan@ejemplo.com" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label small fw-medium text-secondary">Contraseña</label>
+                        <input asp-for="Password" type="password" class="form-control shadcn-input" placeholder="Mínimo 6 caracteres" required />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-medium mb-3 py-2" style="background-color: #0f172a; border-radius: 0.375rem;">
+                        Registrarse
+                    </button>
+                </form>
+
+                <div class="text-center pt-2 border-top" style="border-color: #f1f5f9 !important;">
+                    <p class="small text-muted mb-0">
+                        ¿Ya tienes cuenta? <a asp-action="Login" class="text-dark fw-semibold text-decoration-none">Inicia sesión</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .shadcn-input {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        color: #0f172a;
+    }
+
+        .shadcn-input:focus {
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1);
+        }
+</style>
