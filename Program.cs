@@ -8,7 +8,8 @@ builder.Services.AddControllersWithViews();
 
 // ENSEÑARLE AL SISTEMA QUÉ ES EL APPLICATIONDBCONTEXT (Conectado a PostgreSQL/Supabase)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .UseLowerCaseNamingConvention()); // <-- ESTA ES LA LÍNEA NUEVA QUE ARREGLA EL ERROR
 
 // 1. Encender el motor de sesiones
 builder.Services.AddSession(options => {
