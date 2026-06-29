@@ -16,17 +16,30 @@ namespace DistribuidoraLosAndes.Data
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<PedidoDetalle> PedidoDetalles { get; set; }
 
-        // ESTE ES EL CÓDIGO NUEVO QUE OBLIGA AL SISTEMA A USAR MINÚSCULAS EXACTAS
+        // LA OPCIÓN NUCLEAR: Convertir TODAS las tablas y TODAS las columnas a minúsculas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Rol>().ToTable("roles");
-            modelBuilder.Entity<Usuario>().ToTable("usuarios");
-            modelBuilder.Entity<Categoria>().ToTable("categorias");
-            modelBuilder.Entity<Producto>().ToTable("productos");
-            modelBuilder.Entity<Pedido>().ToTable("pedidos");
-            modelBuilder.Entity<PedidoDetalle>().ToTable("pedidodetalles");
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                // Forzar el nombre de la tabla a minúsculas
+                var tableName = entity.GetTableName();
+                if (!string.IsNullOrEmpty(tableName))
+                {
+                    entity.SetTableName(tableName.ToLower());
+                }
+
+                // Forzar el nombre de cada columna a minúsculas
+                foreach (var property in entity.GetProperties())
+                {
+                    var columnName = property.GetColumnBaseName();
+                    if (!string.IsNullOrEmpty(columnName))
+                    {
+                        property.SetColumnName(columnName.ToLower());
+                    }
+                }
+            }
         }
     }
 }
