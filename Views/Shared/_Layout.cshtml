@@ -63,8 +63,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     @{
+                        // AQUÍ RECUPERAMOS LOS DATOS DE LA SESIÓN
                         var usuarioId = Context.Session.GetString("UsuarioId");
                         var usuarioNombre = Context.Session.GetString("UsuarioNombre");
+                        var usuarioRol = Context.Session.GetString("UsuarioRol"); // <- NUEVO CANDADO
                     }
 
                     <ul class="navbar-nav flex-grow-1 align-items-center">
@@ -95,21 +97,26 @@
                                     <i class="Compras"></i>Mis Compras
                                 </a>
                             </li>
-                            <li class="nav-item ms-3 border-start ps-3">
-                                <a class="nav-link text-dark fw-medium" asp-controller="Categorias" asp-action="Index">
-                                    <i class="Admin_categoria"></i>Admin. Categorías
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-medium" asp-controller="Productos" asp-action="Index">
-                                    <i class="Admin. Productos"></i>Admin. Productos
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-medium" asp-controller="Reportes" asp-action="Index">
-                                    <i class="Reportes"></i>Reportes
-                                </a>
-                            </li>
+
+                            // ESTE ES EL CANDADO: SOLO LOS ADMINISTRADORES VEN ESTO
+                            @if (usuarioRol == "Administrador")
+                            {
+                                <li class="nav-item ms-3 border-start ps-3">
+                                    <a class="nav-link text-dark fw-medium" asp-controller="Categorias" asp-action="Index">
+                                        <i class="Admin_categoria"></i>Admin. Categorías
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark fw-medium" asp-controller="Productos" asp-action="Index">
+                                        <i class="Admin. Productos"></i>Admin. Productos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark fw-medium" asp-controller="Reportes" asp-action="Index">
+                                        <i class="Reportes"></i>Reportes
+                                    </a>
+                                </li>
+                            }
                         }
                     </ul>
 
