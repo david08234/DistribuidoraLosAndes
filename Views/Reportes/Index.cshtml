@@ -5,28 +5,27 @@
 }
 
 <div class="container mt-4 mb-5">
-    
-    <div class="d-flex align-items-center mb-4">
-        <i class="hola"></i>
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="fw-bold text-dark mb-0" style="letter-spacing: -0.025em;">Panel de Reportes</h3>
+        <a asp-action="ExportarExcel" class="btn btn-success shadow-sm">
+            <i class="bi bi-file-earmark-excel me-2"></i>Exportar a Excel
+        </a>
     </div>
 
     <div class="row g-4 mb-5">
-        
         <div class="col-md-4">
             <div class="bg-white p-4 rounded-3 border shadow-sm h-100" style="border-color: #e2e8f0 !important; border-left: 4px solid #10b981 !important;">
                 <p class="text-muted small fw-bold text-uppercase mb-1">Total Ingresos</p>
                 <h3 class="fw-bold text-dark mb-0">Bs. @ViewBag.TotalIngresos.ToString("0.00")</h3>
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="bg-white p-4 rounded-3 border shadow-sm h-100" style="border-color: #e2e8f0 !important; border-left: 4px solid #3b82f6 !important;">
                 <p class="text-muted small fw-bold text-uppercase mb-1">Pedidos Realizados</p>
                 <h3 class="fw-bold text-dark mb-0">@ViewBag.TotalVentas <span class="fs-6 text-muted fw-normal">ventas</span></h3>
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="bg-white p-4 rounded-3 border shadow-sm h-100" style="border-color: #e2e8f0 !important; border-left: 4px solid #f59e0b !important;">
                 <p class="text-muted small fw-bold text-uppercase mb-1">Productos Vendidos</p>
@@ -35,9 +34,13 @@
         </div>
     </div>
 
+    <div class="bg-white p-4 rounded-3 border border-light shadow-sm mb-5">
+        <h5 class="fw-bold mb-4 text-dark">Tendencia de Ingresos (Últimas ventas)</h5>
+        <canvas id="ventasChart" style="max-height: 300px;"></canvas>
+    </div>
+
     <div class="bg-white p-4 rounded-3 border border-light shadow-sm" style="border-color: #e2e8f0 !important;">
         <h5 class="fw-bold mb-4 text-dark">Últimas transacciones</h5>
-        
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
@@ -58,9 +61,7 @@
                                 <td class="fw-bold text-dark">#@item.Id</td>
                                 <td>@item.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td><span class="badge bg-light text-dark border">@item.MetodoPago</span></td>
-                                <td>
-                                    <span class="badge bg-success rounded-pill fw-medium">@item.Estado</span>
-                                </td>
+                                <td><span class="badge bg-success rounded-pill fw-medium">@item.Estado</span></td>
                                 <td class="text-end fw-bold text-dark">Bs. @item.Total.ToString("0.00")</td>
                             </tr>
                         }
@@ -75,5 +76,35 @@
             </table>
         </div>
     </div>
-
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('ventasChart').getContext('2d');
+        // Inyectamos los datos del modelo directamente al JS
+        const labels = @Json.Serialize(Model.OrderBy(p => p.FechaPedido).Select(p => p.FechaPedido.ToString("dd/MM")));
+        const data = @Json.Serialize(Model.OrderBy(p => p.FechaPedido).Select(p => p.Total));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Ingresos por Pedido (Bs.)',
+                    data: data,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+}
