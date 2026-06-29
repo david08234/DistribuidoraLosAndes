@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DistribuidoraLosAndes")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49720687d32d7802f49c653ca1861a32a82b63e3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4bb1847b4db035ee3771a9f99e5d0500ff4b938")]
 [assembly: System.Reflection.AssemblyProductAttribute("DistribuidoraLosAndes")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DistribuidoraLosAndes")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
