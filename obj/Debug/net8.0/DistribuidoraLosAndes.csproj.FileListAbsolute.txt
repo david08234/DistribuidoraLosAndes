@@ -253,3 +253,7 @@ C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\obj\De
 C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\obj\Debug\net8.0\DistribuidoraLosAndes.pdb
 C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\obj\Debug\net8.0\DistribuidoraLosAndes.genruntimeconfig.cache
 C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\obj\Debug\net8.0\ref\DistribuidoraLosAndes.dll
+C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\bin\Debug\net8.0\EFCore.NamingConventions.dll
+C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\bin\Debug\net8.0\Npgsql.dll
+C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\UserOne\source\repos\DistribuidoraLosAndes\DistribuidoraLosAndes\obj\Debug\net8.0\DistribuidoraLosAndes.sourcelink.json

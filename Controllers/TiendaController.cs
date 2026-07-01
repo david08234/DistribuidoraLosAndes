@@ -3,7 +3,7 @@ using DistribuidoraLosAndes.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System; // <-- Agregado para usar DateTime
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -20,20 +20,27 @@ namespace DistribuidoraLosAndes.Controllers
             _context = context;
         }
 
-        // GET: Tienda
-        public async Task<IActionResult> Index(int? categoriaId)
+        // GET: Tienda (Ahora con soporte para búsqueda de voz/texto)
+        public async Task<IActionResult> Index(int? categoriaId, string busqueda)
         {
-            ViewBag.Categorias = await _context.Categorias.ToListAsync();
-            ViewBag.CategoriaSeleccionada = categoriaId;
+            // Consulta base
+            var query = _context.Productos.Include(p => p.Categoria).AsQueryable();
 
-            var productos = _context.Productos.Include(p => p.Categoria).AsQueryable();
-
+            // Filtro por categoría
             if (categoriaId.HasValue)
             {
-                productos = productos.Where(p => p.CategoriaId == categoriaId);
+                query = query.Where(p => p.CategoriaId == categoriaId);
+                ViewBag.CategoriaSeleccionada = categoriaId;
             }
 
-            return View(await productos.ToListAsync());
+            // Filtro por búsqueda de voz/texto
+            if (!string.IsNullOrEmpty(busqueda))
+            {
+                query = query.Where(p => p.Nombre.Contains(busqueda) || (p.Descripcion != null && p.Descripcion.Contains(busqueda)));
+            }
+
+            ViewBag.Categorias = await _context.Categorias.ToListAsync();
+            return View(await query.ToListAsync());
         }
 
         // POST: Tienda/AgregarAlCarrito
@@ -135,22 +142,20 @@ namespace DistribuidoraLosAndes.Controllers
             string? carritoString = HttpContext.Session.GetString("Carrito");
             var carrito = JsonSerializer.Deserialize<List<CarritoItem>>(carritoString!);
 
-            // 1. CREAR LA FACTURA (Con fecha UTC forzada)
             var pedido = new Pedido
             {
                 UsuarioId = usuarioId,
                 Total = carrito!.Sum(c => c.SubTotal),
                 DireccionEnvio = direccion,
                 MetodoPago = metodoPago,
-                NumeroReferencia = "REF-" + DateTime.UtcNow.Ticks.ToString().Substring(0, 8), // <-- CAMBIADO A UTC
+                NumeroReferencia = "REF-" + DateTime.UtcNow.Ticks.ToString().Substring(0, 8),
                 Estado = EstadoPedido.Confirmado,
-                FechaPedido = DateTime.UtcNow // <-- ESTA ES LA LÍNEA MÁGICA QUE SOLUCIONA EL ERROR
+                FechaPedido = DateTime.UtcNow
             };
 
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
-            // 2. CREAR LOS DETALLES Y DESCONTAR INVENTARIO
             foreach (var item in carrito!)
             {
                 var detalle = new PedidoDetalle
@@ -171,10 +176,8 @@ namespace DistribuidoraLosAndes.Controllers
             }
             await _context.SaveChangesAsync();
 
-            // 3. VACIAR EL CARRITO DE LA MEMORIA
             HttpContext.Session.Remove("Carrito");
 
-            // 4. Mandarlo a su historial de compras
             return RedirectToAction("MisCompras");
         }
 

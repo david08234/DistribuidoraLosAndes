@@ -7,7 +7,6 @@
     var categorias = ViewBag.Categorias as IEnumerable<DistribuidoraLosAndes.Models.Categoria>;
     var categoriaSeleccionada = ViewBag.CategoriaSeleccionada as int?;
 
-    // Leer la memoria del carrito y sumar las cantidades
     int totalItems = 0;
     var carritoString = Context.Session.GetString("Carrito");
     if (!string.IsNullOrEmpty(carritoString))
@@ -73,12 +72,34 @@
                 </a>
             </div>
 
+            <form asp-action="Index" method="get" class="mb-4 ps-2" id="formBuscar">
+                @if (categoriaSeleccionada != null)
+                {
+                    <input type="hidden" name="categoriaId" value="@categoriaSeleccionada" />
+                }
+
+                <div class="input-group shadow-sm rounded-pill overflow-hidden border" style="border-color: #e2e8f0 !important; background: white;">
+                    <input type="text" name="busqueda" id="txtBuscar" class="form-control border-0 ps-4 py-2" placeholder="Busca productos, ej. 'Agua'..." />
+
+                    <button class="btn btn-white border-0 bg-white text-muted px-3" type="button" id="btnMicrofono" title="Buscar por voz">
+                        <i class="bi bi-mic-fill fs-5" id="iconoMicro" style="color: #ef4444;"></i>
+                    </button>
+
+                    <button class="btn btn-dark px-4 py-2" type="submit" id="btnBuscar" style="background-color: #0f172a;">
+                        <i class="bi bi-search me-2"></i>Buscar
+                    </button>
+                </div>
+                <small id="estadoVoz" class="text-danger d-block mt-2 ps-3 d-none fw-medium text-pulse">
+                    <i class="bi bi-soundwave me-1"></i>Escuchando... habla ahora.
+                </small>
+            </form>
+
             <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
                 @if (!Model.Any())
                 {
                     <div class="col-12 text-center py-5">
                         <i class="bi bi-cart-x text-muted" style="font-size: 3rem;"></i>
-                        <h5 class="text-muted mt-3">No hay productos en esta categoría por ahora.</h5>
+                        <h5 class="text-muted mt-3">No hay productos que coincidan con tu búsqueda.</h5>
                     </div>
                 }
                 else
@@ -131,4 +152,72 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
+    .text-pulse {
+        animation: pulse 1.2s infinite;
+    }
+
+    /* Visual Studio marcará esto amarillo, ¡es normal! Ignóralo y compila. */
+    @@keyframes pulse {
+        0% {opacity: 0.4;}
+
+        50% {opacity: 1;}
+
+        100% {opacity: 0.4;}
+    }
 </style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnMicrofono = document.getElementById("btnMicrofono");
+            const iconoMicro = document.getElementById("iconoMicro");
+            const txtBuscar = document.getElementById("txtBuscar");
+            const estadoVoz = document.getElementById("estadoVoz");
+            const formBuscar = document.getElementById("formBuscar");
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                console.warn("La API de voz no está soportada en este navegador.");
+                btnMicrofono.style.display = "none";
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'es-BO';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            btnMicrofono.addEventListener("click", function () {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.log("El micrófono ya estaba escuchando.");
+                }
+            });
+
+            recognition.onstart = function () {
+                estadoVoz.classList.remove("d-none");
+                iconoMicro.classList.replace("bi-mic-fill", "bi-record-fill");
+            };
+
+            recognition.onresult = function (event) {
+                const textoEscuchado = event.results[0][0].transcript;
+                txtBuscar.value = textoEscuchado.replace(/\.$/, '');
+                formBuscar.submit();
+            };
+
+            recognition.onend = function () {
+                estadoVoz.classList.add("d-none");
+                iconoMicro.classList.replace("bi-record-fill", "bi-mic-fill");
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Error en micrófono: ", event.error);
+                estadoVoz.classList.add("d-none");
+                iconoMicro.classList.replace("bi-record-fill", "bi-mic-fill");
+            };
+        });
+    </script>
+}

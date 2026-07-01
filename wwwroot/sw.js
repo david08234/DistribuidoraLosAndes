@@ -6,7 +6,6 @@ const urlsToCache = [
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
 ];
 
-// Instalar el Service Worker y guardar la estructura básica
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
@@ -15,7 +14,6 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activar y limpiar cachés viejos
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -30,9 +28,7 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Interceptador de peticiones: Intenta ir a internet, si falla usa el caché
 self.addEventListener('fetch', event => {
-    // Solo interceptar peticiones GET normales (no formularios POST de compras/registros)
     if (event.request.method !== 'GET') return;
 
     event.respondWith(
